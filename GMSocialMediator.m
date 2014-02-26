@@ -124,13 +124,16 @@ NSString * const GMSocialMediatorFacebookResponseEmail = @"email";
                     block(nil);
             }
             
-            if (error) {
+            if (error)
+            {
                 NSUInteger statusCode = 0;
                 
-                if (error.code == 6) {
+                if (error.code == 6)
+                {
                     NSLog(@"Error: There is no Facebook account setup.");
                     statusCode = GMSocialMediatorFacebookErrorNoLocalAccount;
-                } else
+                }
+                else
                 {
                     NSLog(@"Error: %ld(%@)", (long)[error code], [error localizedDescription]);
                     statusCode = GMSocialMediatorFacebookErrorUnkown;
@@ -176,11 +179,15 @@ NSString * const GMSocialMediatorFacebookResponseEmail = @"email";
             if (!error)
             {
                 NSDictionary *parsedResponse = [weakSelf p_parseJSONWithData:responseData];
-                if (parsedResponse) {
+                if (parsedResponse)
+                {
                     GMFacebookUser *aFbUser = [[GMFacebookUser alloc] initFacebookUserWithAttributes:parsedResponse];
-                    if (block) {
+                    if (block)
+                    {
                         block(aFbUser, nil);
-                    } else {
+                    }
+                    else
+                    {
                         NSError *anError = [NSError errorWithDomain:@"GMSocialMediator"
                                                                code:GMSocialMediatorFacebookErrorCouldNotParseData
                                                            userInfo:@{NSLocalizedDescriptionKey: @"Could not parse response data"}];
