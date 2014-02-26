@@ -1,0 +1,457 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5609EC6518BE161200066AAF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5609EC6418BE161200066AAF /* Foundation.framework */; };
+		5609EC6718BE161200066AAF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5609EC6618BE161200066AAF /* CoreGraphics.framework */; };
+		5609EC6918BE161200066AAF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5609EC6818BE161200066AAF /* UIKit.framework */; };
+		5609EC6F18BE161200066AAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5609EC6D18BE161200066AAF /* InfoPlist.strings */; };
+		5609EC7118BE161200066AAF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5609EC7018BE161200066AAF /* main.m */; };
+		5609EC7518BE161200066AAF /* SMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5609EC7418BE161200066AAF /* SMAppDelegate.m */; };
+		5609EC7718BE161200066AAF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5609EC7618BE161200066AAF /* Images.xcassets */; };
+		5609EC7E18BE161200066AAF /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5609EC7D18BE161200066AAF /* XCTest.framework */; };
+		5609EC7F18BE161200066AAF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5609EC6418BE161200066AAF /* Foundation.framework */; };
+		5609EC8018BE161200066AAF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5609EC6818BE161200066AAF /* UIKit.framework */; };
+		5609EC8818BE161200066AAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5609EC8618BE161200066AAF /* InfoPlist.strings */; };
+		5609EC8A18BE161200066AAF /* SocialMediatorExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5609EC8918BE161200066AAF /* SocialMediatorExampleTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5609EC8118BE161200066AAF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5609EC5918BE161200066AAF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5609EC6018BE161200066AAF;
+			remoteInfo = SocialMediatorExample;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		5609EC6118BE161200066AAF /* SocialMediatorExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SocialMediatorExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5609EC6418BE161200066AAF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		5609EC6618BE161200066AAF /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		5609EC6818BE161200066AAF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		5609EC6C18BE161200066AAF /* SocialMediatorExample-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SocialMediatorExample-Info.plist"; sourceTree = "<group>"; };
+		5609EC6E18BE161200066AAF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5609EC7018BE161200066AAF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5609EC7218BE161200066AAF /* SocialMediatorExample-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SocialMediatorExample-Prefix.pch"; sourceTree = "<group>"; };
+		5609EC7318BE161200066AAF /* SMAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMAppDelegate.h; sourceTree = "<group>"; };
+		5609EC7418BE161200066AAF /* SMAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SMAppDelegate.m; sourceTree = "<group>"; };
+		5609EC7618BE161200066AAF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		5609EC7C18BE161200066AAF /* SocialMediatorExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SocialMediatorExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5609EC7D18BE161200066AAF /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		5609EC8518BE161200066AAF /* SocialMediatorExampleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SocialMediatorExampleTests-Info.plist"; sourceTree = "<group>"; };
+		5609EC8718BE161200066AAF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5609EC8918BE161200066AAF /* SocialMediatorExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SocialMediatorExampleTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5609EC5E18BE161200066AAF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5609EC6718BE161200066AAF /* CoreGraphics.framework in Frameworks */,
+				5609EC6918BE161200066AAF /* UIKit.framework in Frameworks */,
+				5609EC6518BE161200066AAF /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5609EC7918BE161200066AAF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5609EC7E18BE161200066AAF /* XCTest.framework in Frameworks */,
+				5609EC8018BE161200066AAF /* UIKit.framework in Frameworks */,
+				5609EC7F18BE161200066AAF /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5609EC5818BE161200066AAF = {
+			isa = PBXGroup;
+			children = (
+				5609EC6A18BE161200066AAF /* SocialMediatorExample */,
+				5609EC8318BE161200066AAF /* SocialMediatorExampleTests */,
+				5609EC6318BE161200066AAF /* Frameworks */,
+				5609EC6218BE161200066AAF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5609EC6218BE161200066AAF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5609EC6118BE161200066AAF /* SocialMediatorExample.app */,
+				5609EC7C18BE161200066AAF /* SocialMediatorExampleTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5609EC6318BE161200066AAF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5609EC6418BE161200066AAF /* Foundation.framework */,
+				5609EC6618BE161200066AAF /* CoreGraphics.framework */,
+				5609EC6818BE161200066AAF /* UIKit.framework */,
+				5609EC7D18BE161200066AAF /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5609EC6A18BE161200066AAF /* SocialMediatorExample */ = {
+			isa = PBXGroup;
+			children = (
+				5609EC7318BE161200066AAF /* SMAppDelegate.h */,
+				5609EC7418BE161200066AAF /* SMAppDelegate.m */,
+				5609EC7618BE161200066AAF /* Images.xcassets */,
+				5609EC6B18BE161200066AAF /* Supporting Files */,
+			);
+			path = SocialMediatorExample;
+			sourceTree = "<group>";
+		};
+		5609EC6B18BE161200066AAF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5609EC6C18BE161200066AAF /* SocialMediatorExample-Info.plist */,
+				5609EC6D18BE161200066AAF /* InfoPlist.strings */,
+				5609EC7018BE161200066AAF /* main.m */,
+				5609EC7218BE161200066AAF /* SocialMediatorExample-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		5609EC8318BE161200066AAF /* SocialMediatorExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				5609EC8918BE161200066AAF /* SocialMediatorExampleTests.m */,
+				5609EC8418BE161200066AAF /* Supporting Files */,
+			);
+			path = SocialMediatorExampleTests;
+			sourceTree = "<group>";
+		};
+		5609EC8418BE161200066AAF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5609EC8518BE161200066AAF /* SocialMediatorExampleTests-Info.plist */,
+				5609EC8618BE161200066AAF /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5609EC6018BE161200066AAF /* SocialMediatorExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5609EC8D18BE161200066AAF /* Build configuration list for PBXNativeTarget "SocialMediatorExample" */;
+			buildPhases = (
+				5609EC5D18BE161200066AAF /* Sources */,
+				5609EC5E18BE161200066AAF /* Frameworks */,
+				5609EC5F18BE161200066AAF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SocialMediatorExample;
+			productName = SocialMediatorExample;
+			productReference = 5609EC6118BE161200066AAF /* SocialMediatorExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		5609EC7B18BE161200066AAF /* SocialMediatorExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5609EC9018BE161200066AAF /* Build configuration list for PBXNativeTarget "SocialMediatorExampleTests" */;
+			buildPhases = (
+				5609EC7818BE161200066AAF /* Sources */,
+				5609EC7918BE161200066AAF /* Frameworks */,
+				5609EC7A18BE161200066AAF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5609EC8218BE161200066AAF /* PBXTargetDependency */,
+			);
+			name = SocialMediatorExampleTests;
+			productName = SocialMediatorExampleTests;
+			productReference = 5609EC7C18BE161200066AAF /* SocialMediatorExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5609EC5918BE161200066AAF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = SM;
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = Kenoca;
+				TargetAttributes = {
+					5609EC7B18BE161200066AAF = {
+						TestTargetID = 5609EC6018BE161200066AAF;
+					};
+				};
+			};
+			buildConfigurationList = 5609EC5C18BE161200066AAF /* Build configuration list for PBXProject "SocialMediatorExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 5609EC5818BE161200066AAF;
+			productRefGroup = 5609EC6218BE161200066AAF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5609EC6018BE161200066AAF /* SocialMediatorExample */,
+				5609EC7B18BE161200066AAF /* SocialMediatorExampleTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5609EC5F18BE161200066AAF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5609EC6F18BE161200066AAF /* InfoPlist.strings in Resources */,
+				5609EC7718BE161200066AAF /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5609EC7A18BE161200066AAF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5609EC8818BE161200066AAF /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5609EC5D18BE161200066AAF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5609EC7518BE161200066AAF /* SMAppDelegate.m in Sources */,
+				5609EC7118BE161200066AAF /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5609EC7818BE161200066AAF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5609EC8A18BE161200066AAF /* SocialMediatorExampleTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5609EC8218BE161200066AAF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5609EC6018BE161200066AAF /* SocialMediatorExample */;
+			targetProxy = 5609EC8118BE161200066AAF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		5609EC6D18BE161200066AAF /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5609EC6E18BE161200066AAF /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		5609EC8618BE161200066AAF /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5609EC8718BE161200066AAF /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5609EC8B18BE161200066AAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		5609EC8C18BE161200066AAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5609EC8E18BE161200066AAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SocialMediatorExample/SocialMediatorExample-Prefix.pch";
+				INFOPLIST_FILE = "SocialMediatorExample/SocialMediatorExample-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		5609EC8F18BE161200066AAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SocialMediatorExample/SocialMediatorExample-Prefix.pch";
+				INFOPLIST_FILE = "SocialMediatorExample/SocialMediatorExample-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		5609EC9118BE161200066AAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SocialMediatorExample.app/SocialMediatorExample";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SocialMediatorExample/SocialMediatorExample-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "SocialMediatorExampleTests/SocialMediatorExampleTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		5609EC9218BE161200066AAF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SocialMediatorExample.app/SocialMediatorExample";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SocialMediatorExample/SocialMediatorExample-Prefix.pch";
+				INFOPLIST_FILE = "SocialMediatorExampleTests/SocialMediatorExampleTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5609EC5C18BE161200066AAF /* Build configuration list for PBXProject "SocialMediatorExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5609EC8B18BE161200066AAF /* Debug */,
+				5609EC8C18BE161200066AAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5609EC8D18BE161200066AAF /* Build configuration list for PBXNativeTarget "SocialMediatorExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5609EC8E18BE161200066AAF /* Debug */,
+				5609EC8F18BE161200066AAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		5609EC9018BE161200066AAF /* Build configuration list for PBXNativeTarget "SocialMediatorExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5609EC9118BE161200066AAF /* Debug */,
+				5609EC9218BE161200066AAF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5609EC5918BE161200066AAF /* Project object */;
+}

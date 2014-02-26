@@ -10,7 +10,7 @@
 @import Accounts;
 @import Social;
 
-static NSString * const GMSocialMediatorFacebookAppId = @"";
+static NSString * const GMSocialMediatorFacebookAppId = @"589020147853035";
 
 // Facebook parameters for response data
 NSString * const GMSocialMediatorFacebookResponseUserId = @"id";
