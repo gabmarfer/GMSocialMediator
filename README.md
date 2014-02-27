@@ -6,3 +6,4 @@ A helper class to intermediate with the SocialFramework to authenticate and retr
 **Do not forget to set your FacebookAppID in GMSocialMediatorFacebookAppId constant**
 
 *Use of UIActionSheets+Blocks created by Ryan Maxwell*
+*https://github.com/ryanmaxwell/UIActionSheet-Blocks*
