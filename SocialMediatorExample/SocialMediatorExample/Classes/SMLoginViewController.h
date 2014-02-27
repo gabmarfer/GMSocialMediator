@@ -10,4 +10,9 @@
 
 @interface SMLoginViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+- (id)initLoginVC;
+- (IBAction)handleTapBtnLoginFacebook:(id)sender;
+- (IBAction)handleTapBtnLoginTwitter:(id)sender;
+
 @end

@@ -10,6 +10,7 @@
 
 @interface SMAppDelegate : UIResponder <UIApplicationDelegate>
 
+@property (strong, nonatomic) UINavigationController *loginNVC;
 @property (strong, nonatomic) UIWindow *window;
 
 @end
