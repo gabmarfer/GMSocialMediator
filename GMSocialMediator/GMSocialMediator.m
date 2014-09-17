@@ -10,21 +10,27 @@
 #import "UIActionSheet+Blocks.h"
 @import Accounts;
 @import Social;
+#import <FacebookSDK/FacebookSDK.h>
 
-static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
+//static NSString * const GMSocialMediatorFacebookAppId = @"1436396976626996";
+static NSString * const GMSocialMediatorFacebookAppId = @"1426906887537214";
 
 @interface GMSocialMediator () <UIActionSheetDelegate>
-@property (nonatomic, strong, readwrite) GMFacebookUser *facebookUser;
-@property (nonatomic, strong, readwrite) GMTwitterUser *twitterUser;
 @property (nonatomic, strong) ACAccountStore *accountStore;
 @property (nonatomic, strong) ACAccount *facebookAccount;
 @property (nonatomic, strong) NSArray *allTwitterAccounts;
 @property (nonatomic, strong) ACAccount *twitterAccount;
 @property (nonatomic, getter = hasFacebookReadAccess) __block BOOL facebookReadAccess;
+@property (nonatomic, getter = hasFacebookPublishAccess) __block BOOL facebookPublishAccess;
 @property (nonatomic, getter = hasTwitterReadAccess) __block BOOL twitterReadAccess;
 @end
 
 @implementation GMSocialMediator
+
++ (NSString *)defaultTextToShare
+{
+    return [NSString stringWithFormat:NSLocalizedString(@"kTextFacebookRequest", nil), YMYumeUrliTunes, YMYumeUrlGooglePlay];
+}
 
 + (GMSocialMediator *)sharedMediator
 {
@@ -47,10 +53,37 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
     return self;
 }
 
+- (NSString *)localizedStringForKey:(NSString *)key withDefault:(NSString *)defaultString
+{
+    static NSBundle *bundle = nil;
+    if (bundle == nil)
+    {
+        NSString *bundlePath = [[NSBundle mainBundle] pathForResource:NSStringFromClass([self class]) ofType:@"bundle"];
+        bundle = [NSBundle bundleWithPath:bundlePath];
+        NSString *language = [[NSLocale preferredLanguages] count] ? [NSLocale preferredLanguages][0] : @"es";
+        if (![[bundle localizations] containsObject:language])
+        {
+            language = [language componentsSeparatedByString:@"-"][0];
+        }
+        if ([[bundle localizations] containsObject:language])
+        {
+            bundlePath = [bundle pathForResource:language ofType:@"lproj"];
+        }
+        bundle = [NSBundle bundleWithPath:bundlePath] ?: [NSBundle mainBundle];
+    }
+    defaultString = [bundle localizedStringForKey:key value:defaultString table:nil];
+    return [[NSBundle mainBundle] localizedStringForKey:key value:defaultString table:nil];
+}
+
 #pragma mark - Facebook methods
 - (BOOL)hasFacebookReadAccess
 {
     return _facebookReadAccess;
+}
+
+- (BOOL)hasFacebookPublishAccess
+{
+    return _facebookPublishAccess;
 }
 
 - (ACAccount *)facebookAccount
@@ -58,23 +91,18 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
     return _facebookAccount;
 }
 
-#pragma mark --- Request methods
-/**
- * Request Read Access Permissions to Facebook
- *
- * @discussion Only make the request if we don't have requested the same 
- * permissions previously
- * @param block A Block with an error or nil
- * @return
- */
+#pragma mark --- Request permissions methods
 - (void)requestReadAccessToFacebookWithBlock:(void (^)(NSError *error))block
 {
     if (![self hasFacebookReadAccess])
     {
         // Specify the permissions required
-        NSArray *permissions = @[@"read_stream",
-                                 @"email",
-                                 ];
+        NSArray *permissions = @[@"basic_info",
+                                 @"user_about_me",
+                                 @"user_friends",
+                                 @"user_location",
+                                 @"user_website",
+                                 @"email"];
         
         // Specify the audience
         NSDictionary *facebookOptions = @{ACFacebookAppIdKey : GMSocialMediatorFacebookAppId,
@@ -118,7 +146,7 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
                     statusCode = GMSocialMediatorErrorUnkown;
                 }
                 
-                NSError *anError = [NSError errorWithDomain:@"GMSocialMediator"
+                NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
                                                        code:statusCode
                                                    userInfo:@{NSLocalizedDescriptionKey: [error localizedDescription]}];
                 if (block)
@@ -134,53 +162,116 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
     }
 }
 
-/**
- * Fetch user info from Facebook
- *
- * @discussion This method only makes the request if we have requested the Read permissions previously
- * @param block A block with a Dictionary containing the retrieved userInfo and an error or nil
- * @return
- */
-- (void)fetchFacebookUserInfoWithBlock:(void (^)(GMFacebookUser *facebookUser, NSError *error))block
+- (void)requestPublishPermissionsToFacebookWithBlock:(void (^)(NSError *error))block
+{
+    if (![self hasFacebookPublishAccess])
+    {
+        // Specify the permissions required
+        NSArray *permissions = @[@"publish_actions"];
+        
+        // Specify the audience
+        NSDictionary *facebookOptions = @{ACFacebookAppIdKey : GMSocialMediatorFacebookAppId,
+                                          ACFacebookPermissionsKey : permissions,
+                                          ACFacebookAudienceKey: ACFacebookAudienceFriends,
+                                          };
+        
+        // Specify the Account Type
+        ACAccountType *accountType = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+        
+        if (!accountType.accessGranted)
+        {
+            _facebookPublishAccess = NO;
+        }
+        
+        // Perform the permission request
+        [self.accountStore requestAccessToAccountsWithType:accountType options:facebookOptions completion:^(BOOL granted, NSError *error) {
+            if (granted)
+            {
+                NSLog(@"Facebook publish permissions granted.");
+                
+                _facebookPublishAccess = YES;
+                NSArray *allAccounts = [self.accountStore accountsWithAccountType:accountType];
+                self.facebookAccount = [allAccounts lastObject];
+                
+                if (block)
+                    block(nil);
+            }
+            
+            if (error)
+            {
+                NSUInteger statusCode = 0;
+                
+                if (error.code == 6)
+                {
+                    NSLog(@"Error: There is no Facebook account setup.");
+                    statusCode = GMSocialMediatorErrorNoLocalAccount;
+                }
+                else
+                {
+                    NSLog(@"Error: %ld(%@)", (long)[error code], [error localizedDescription]);
+                    statusCode = GMSocialMediatorErrorUnkown;
+                }
+                
+                NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
+                                                       code:statusCode
+                                                   userInfo:@{NSLocalizedDescriptionKey: [error localizedDescription]}];
+                if (block)
+                    block(anError);
+            }
+        }];
+    }
+    else
+    {
+        // We already have read access, so go on
+        if (block)
+            block(nil);
+    }
+}
+
+#pragma mark --- Get basic info
+- (void)requestFacebookUserBasicInfoWithBlock:(void (^)(GMFacebookUser *, NSError *))block
 {
     if ([self hasFacebookReadAccess])
     {
-        // Create the request
-        NSURL *url = [NSURL URLWithString:@"https://graph.facebook.com/me"];
+        // Basic info request
+        NSURL *urlMe = [NSURL URLWithString:@"https://graph.facebook.com/me"];
+        SLRequest *requestBasicInfo = [SLRequest requestForServiceType:SLServiceTypeFacebook requestMethod:SLRequestMethodGET URL:urlMe parameters:nil];
         
-        SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeFacebook requestMethod:SLRequestMethodGET URL:url parameters:nil];
         ACAccountType *account_type_facebook = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
         [self.facebookAccount setAccountType:account_type_facebook];
-        [request setAccount:self.facebookAccount];
+        [requestBasicInfo setAccount:self.facebookAccount];
         
         __weak GMSocialMediator *weakSelf = self;
-        [request performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        // REQUEST BASIC INFO
+        [requestBasicInfo performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
             if (!error)
             {
                 NSDictionary *parsedResponse = [weakSelf p_parseJSONWithData:responseData];
                 if (parsedResponse)
                 {
-                    self.facebookUser = [[GMFacebookUser alloc] initFacebookUserWithAttributes:parsedResponse];
+                    STLog(@"FacebookResponse: %@", parsedResponse);
+                    GMFacebookUser *aFbUser = [[GMFacebookUser alloc] initFacebookUserWithAttributes:parsedResponse];
                     if (block)
-                    {
-                        block([weakSelf facebookUser], nil);
-                    }
-                    else
-                    {
-                        NSError *anError = [NSError errorWithDomain:@"GMSocialMediator"
-                                                               code:GMSocialMediatorErrorCouldNotParseData
-                                                           userInfo:@{NSLocalizedDescriptionKey: @"Could not parse response data"}];
-                        if (block)
-                            block(nil, anError);
-                    }
+                        block(aFbUser, nil);
                 }
+                else
+                {
+                    NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
+                                                           code:GMSocialMediatorErrorCouldNotParseData
+                                                       userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kCouldNotParseResponse"
+                                                                                                             withDefault:@"Cannot fetch user info."]}];
+                    if (block)
+                        block(nil, anError);
+                }
+                
             }
             else
             {
                 NSLog(@"Error %ld", (long)[urlResponse statusCode]);
-                NSError *anError = [NSError errorWithDomain:@"GMSocialMediator"
+                NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
                                                        code:GMSocialMediatorErrorUnkown
-                                                   userInfo:@{NSLocalizedDescriptionKey: @"Error requesting user info"}];
+                                                   userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kErrorCouldNotConnectWithFacebook"
+                                                                                                         withDefault:@"Cannot connect with Facebook"]}];
                 if (block)
                     block(nil, anError);
             }
@@ -188,12 +279,237 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
     }
     else
     {
-        NSError *anError = [NSError errorWithDomain:@"GMSocialMediator"
+        NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
                                                code:GMSocialMediatorErrorNotGrantedPermissions
-                                           userInfo:@{NSLocalizedDescriptionKey: @"Hasn't got Facebook Read Access permissions"}];
+                                           userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kErrorAccessNotGranted"
+                                                                                                 withDefault:@"Need Read Access permissions to your Facebook account."]}];
         if (block)
             block(nil, anError);
     }
+}
+
+#pragma mark --- Get photo
+- (void)requestFacebookUserProfilePhotoWithBlock:(void (^)(NSURL *photoUrl, NSError *error))block
+{
+    NSURL *urlPicture = [NSURL URLWithString:@"https://graph.facebook.com/me/picture"];
+    SLRequest *requestPicture = [SLRequest requestForServiceType:SLServiceTypeFacebook
+                                                   requestMethod:SLRequestMethodGET
+                                                             URL:urlPicture
+                                                      parameters:@{@"redirect": @"false"}];
+    
+    ACAccountType *account_type_facebook = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+    [self.facebookAccount setAccountType:account_type_facebook];
+    [requestPicture setAccount:self.facebookAccount];
+    
+    // REQUEST PROFILE PHOTO
+    __weak GMSocialMediator *weakSelf = self;
+    [requestPicture performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        if (!error)
+        {
+            NSDictionary *parsedResponse = [weakSelf p_parseJSONWithData:responseData];
+            if (parsedResponse)
+            {
+                NSString *profilePhoto = [parsedResponse valueForKeyPath:GMSocialMediatorFacebookResponsePicture];
+                NSURL *urlProfilePhoto = (profilePhoto != nil) ? [NSURL URLWithString:profilePhoto] : nil;
+                if (block)
+                    block(urlProfilePhoto, nil);
+            }
+            else
+            {
+                NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
+                                                       code:GMSocialMediatorErrorCouldNotParseData
+                                                   userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kCouldNotParseResponse"
+                                                                                                         withDefault:@"Cannot fetch user info."]}];
+                if (block)
+                    block(nil, anError);
+            }
+        }
+        else
+        {
+            NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
+                                                   code:GMSocialMediatorErrorUnkown
+                                               userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kErrorCouldNotConnectWithFacebook"
+                                                                                                     withDefault:@"Cannot connect with Facebook"]}];
+            if (block)
+                block(nil, anError);
+        }
+    }];
+}
+
+#pragma mark --- Get friends
+- (void)requestFacebookUserFriendsWithBlock:(void (^)(NSArray *friends, NSError *error))block
+{
+    NSURL *urlFriends = [NSURL URLWithString:@"https://graph.facebook.com/me/friends"];
+    SLRequest *requestFriends = [SLRequest requestForServiceType:SLServiceTypeFacebook requestMethod:SLRequestMethodGET URL:urlFriends parameters:nil];
+    
+    ACAccountType *account_type_facebook = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+    [self.facebookAccount setAccountType:account_type_facebook];
+    [requestFriends setAccount:self.facebookAccount];
+    
+    __weak GMSocialMediator *weakSelf = self;
+    [requestFriends performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+        if (!error)
+        {
+            NSDictionary *parsedResponse = [weakSelf p_parseJSONWithData:responseData];
+            if (parsedResponse)
+            {
+                NSArray *friendList = [parsedResponse valueForKeyPath:GMSocialMediatorFacebookResponseFriendList];
+                NSMutableArray *friends = [NSMutableArray new];
+                [friendList enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    GMFacebookUser *anUser = [[GMFacebookUser alloc] initFacebookUserWithAttributes:(NSDictionary *)obj];
+                    [friends addObject:anUser];
+                }];
+                
+                if (block)
+                    block(friends, nil);
+            }
+            else
+            {
+                NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
+                                                       code:GMSocialMediatorErrorCouldNotParseData
+                                                   userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kCouldNotParseResponse"
+                                                                                                         withDefault:@"Cannot fetch user info."]}];
+                if (block)
+                    block(@[], anError);
+            }
+        }
+        else
+        {
+            NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
+                                                   code:GMSocialMediatorErrorUnkown
+                                               userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kErrorCouldNotConnectWithFacebook"
+                                                                                                     withDefault:@"Cannot connect with Facebook"]}];
+            if (block)
+                block(@[], anError);
+        }
+    }];
+}
+
+#pragma mark --- Publish to Facebook
+- (void)requestPublishFacebookStory:(GMFacebookStory *)fbStory block:(void (^)(NSError *))block
+{
+    if ([self hasFacebookPublishAccess])
+    {
+        // Basic info request
+        NSURL *urlFeed = [NSURL URLWithString:@"https://graph.facebook.com/me/feed"];
+        NSDictionary *params = [fbStory toDictionary];
+        NSLog(@"facebookParams: %@", params);
+        SLRequest *requestPublish = [SLRequest requestForServiceType:SLServiceTypeFacebook requestMethod:SLRequestMethodPOST URL:urlFeed parameters:params];
+        
+        ACAccountType *account_type_facebook = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+        [self.facebookAccount setAccountType:account_type_facebook];
+        [requestPublish setAccount:self.facebookAccount];
+        
+        __weak GMSocialMediator *weakSelf = self;
+        // REQUEST PUBLISH
+        [requestPublish performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+            if (!error)
+            {
+                NSDictionary *parsedResponse = [weakSelf p_parseJSONWithData:responseData];
+                if (parsedResponse)
+                {
+                    STLog(@"FacebookResponse: %@", parsedResponse);
+                    if (block)
+                        block(nil);
+                }
+                else
+                {
+                    NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
+                                                           code:GMSocialMediatorErrorCouldNotParseData
+                                                       userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kCouldNotParseResponse"
+                                                                                                             withDefault:@"Cannot fetch user info."]}];
+                    if (block)
+                        block(anError);
+                }
+                
+            }
+            else
+            {
+                NSLog(@"Error %ld", (long)[urlResponse statusCode]);
+                NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
+                                                       code:GMSocialMediatorErrorUnkown
+                                                   userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kErrorCouldNotConnectWithFacebook"
+                                                                                                         withDefault:@"Cannot connect with Facebook"]}];
+                if (block)
+                    block(anError);
+            }
+        }];
+
+    }
+    else
+    {
+        NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
+                                               code:GMSocialMediatorErrorNotGrantedPermissions
+                                           userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kErrorAccessNotGranted"
+                                                                                                 withDefault:@"Need Publish Permissions to your Facebook account."]}];
+        if (block)
+            block(anError);
+    }
+}
+
+#pragma mark --- Make requests
+- (void)makeFriendRequestWithBlock:(void (^)(NSError *error))block
+{
+    [FBWebDialogs
+     presentRequestsDialogModallyWithSession:nil
+     message:[GMSocialMediator defaultTextToShare]
+     title:nil
+     parameters:nil
+     handler:^(FBWebDialogResult result, NSURL *resultURL, NSError *error) {
+         if (error) {
+             // Error launching the dialog or sending the request.
+             STLog(@"Error sending request.");
+             if (block) {
+                 block(error);
+             }
+         } else {
+             if (result == FBWebDialogResultDialogNotCompleted) {
+                 // User clicked the "x" icon
+                 STLog(@"User canceled request.");
+                 NSError *error = [[NSError alloc] initWithDomain:NSStringFromClass([self class])
+                                                             code:GMSocialMediatorErrorInviteFriends
+                                                         userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"kErrorInviteFriendsRequestCanceled", nil)}];
+                 if (block) {
+                     block(error);
+                 }
+             } else {
+                 // Handle the send request callback
+                 NSDictionary *urlParams = [self parseURLParams:[resultURL query]];
+                 if (![urlParams valueForKey:@"request"]) {
+                     // User clicked the Cancel button
+                     STLog(@"User canceled request.");
+                     NSError *error = [[NSError alloc] initWithDomain:NSStringFromClass([self class])
+                                                                 code:GMSocialMediatorErrorInviteFriends
+                                                             userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"kErrorInviteFriendsRequestCanceled", nil)}];
+                     if (block) {
+                         block(error);
+                     }
+                 } else {
+                     // User clicked the Send button
+                     NSString *requestID = [urlParams valueForKey:@"request"];
+                     STLog(@"Sent Request with ID: %@", requestID);
+                     if (block) {
+                         block(nil);
+                     }
+                 }
+             }
+         }
+     }];
+}
+
+/**
+ * Helper method for parsing URL parameters.
+ */
+- (NSDictionary*)parseURLParams:(NSString *)query {
+    NSArray *pairs = [query componentsSeparatedByString:@"&"];
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    for (NSString *pair in pairs) {
+        NSArray *kv = [pair componentsSeparatedByString:@"="];
+        NSString *val =
+        [kv[1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        params[kv[0]] = val;
+    }
+    return params;
 }
 
 #pragma mark - Twitter methods
@@ -215,14 +531,6 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
 }
 
 #pragma mark --- Twitter requests
-/**
- * Request Read Access Permissions to Twitter accounts
- *
- * @discussion Only make the request if we don't have requested the same
- * permissions previously
- * @param block A Block with an error or nil
- * @return
- */
 - (void)requestReadAccessToTwitterWithBlock:(void (^)(NSError *error))block
 {
     if (![self hasTwitterReadAccess])
@@ -253,9 +561,10 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
             }
             else
             {
-                NSError *anError = [NSError errorWithDomain:@"GMSocialMediator"
+                NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
                                                        code:GMSocialMediatorErrorNotGrantedPermissions
-                                                   userInfo:@{NSLocalizedDescriptionKey: @"Hasn't got Facebook Read Access permissions"}];
+                                                   userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kErrorAccessNotGranted"
+                                                                                                         withDefault:@"Need Read Access permissions to your Facebook account."]}];
                 if (block)
                     block(anError);
             }
@@ -270,13 +579,6 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
 
 }
 
-/**
- * Present an ActionSheet to the user to select a Twitter Account
- *
- * @param aView The UIView in which to present the ActionSheet
- * @param block A Block with the selected Twitter account or an error
- * @return
- */
 - (void)selectTwitterAccountWithSelectorInView:(UIView *)aView block:(void (^)(ACAccount *selectedTwitterAccount, NSError *error))block
 {
     if ([[self allTwitterAccounts] count] > 0)
@@ -284,8 +586,8 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
         __weak GMSocialMediator *weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIActionSheet showInView:aView
-                            withTitle:@"Select a Twitter account"
-                    cancelButtonTitle:@"Cancel"
+                            withTitle:[self localizedStringForKey:@"kTextSelectTwitterAccount" withDefault:@"Select a Twitter account"]
+                    cancelButtonTitle:[self localizedStringForKey:@"kTextCancel" withDefault:@"Cancel"]
                destructiveButtonTitle:nil
                     otherButtonTitles:[[self allTwitterAccounts] valueForKey:@"username"]
                              tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
@@ -298,9 +600,9 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
                                  }
                                  else
                                  {
-                                     NSError *anError = [NSError errorWithDomain:@"GMSocialMediator"
+                                     NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
                                                                             code:GMSocialMediatorErrorNotSelectedTwitterAccount
-                                                                        userInfo:@{NSLocalizedDescriptionKey: @"Not selected twitter account."}];
+                                                                        userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kErrorTwitterAccountNotSelected" withDefault:@"Need to choose one Twitter account."]}];
                                      if (block)
                                          block(nil, anError);
                                  }
@@ -309,22 +611,17 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
     }
     else
     {
-        NSError *anError = [NSError errorWithDomain:@"GMSocialMediator"
+        NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
                                                code:GMSocialMediatorErrorNoLocalAccount
-                                           userInfo:@{NSLocalizedDescriptionKey: @"No local accounts."}];
+                                           userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kErrorNoTwitterAccountsFound"
+                                                                                                 withDefault:@"Cannot find a Twitter account."]}];
         if (block)
             block(nil, anError);
     }
 }
 
-/**
- * Fetch Twitter user info
- *
- * @param twitterAccount The ACAccount from which to read user info
- * @param block A block with the GMTwitterUser or an error
- * @return
- */
-- (void)fetchUserDataForAccount:(ACAccount *)twitterAccount block:(void (^)(GMTwitterUser *twitterUser, NSError *error))block
+
+- (void)requestTwitterUserDataForAccount:(ACAccount *)twitterAccount block:(void (^)(GMTwitterUser *twitterUser, NSError *error))block
 {
     // Create the request
     NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/account/verify_credentials.json"];
@@ -344,15 +641,16 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
             NSDictionary *parsedResponse = [weakSelf p_parseJSONWithData:responseData];
             if (parsedResponse)
             {
-                weakSelf.twitterUser = [[GMTwitterUser alloc] initTwitterUserWithAttributes:parsedResponse];
+                GMTwitterUser *aTwUser = [[GMTwitterUser alloc] initTwitterUserWithAttributes:parsedResponse];
                 if (block)
-                    block([weakSelf twitterUser], nil);
+                    block(aTwUser, nil);
             }
             else
             {
-                NSError *anError = [NSError errorWithDomain:@"GMSocialMediator"
+                NSError *anError = [NSError errorWithDomain:NSStringFromClass([self class])
                                                        code:GMSocialMediatorErrorCouldNotParseData
-                                                   userInfo:@{NSLocalizedDescriptionKey: @"Could not parse response data"}];
+                                                   userInfo:@{NSLocalizedDescriptionKey: [self localizedStringForKey:@"kCouldNotParseResponse"
+                                                                                                         withDefault:@"Cannot fetch user info."]}];
                 if (block)
                     block(nil, anError);
             }
@@ -365,15 +663,7 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
     }];
 }
 
-
-/**
- * Fetch friends list (people that i am following)
- *
- * @param twitterAccount The Twitter account from which to fetch the friends
- * @param block A Block with the list of friends and an error or nil
- * @return
- */
-- (void)fetchAllUserFriendsForAccount:(ACAccount *)twitterAccount
+- (void)requestTwitterAllUserFriendsForAccount:(ACAccount *)twitterAccount
                                 block:(void (^)(NSArray *friends, NSError *error))block
 {
     __block NSNumber *nCursor = @-1;
@@ -405,14 +695,7 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
     while (![nCursor integerValue] != 0);
 }
 
-/**
- * Fetch followers list (people that are following me)
- *
- * @param twitterAccount The Twitter account to fetch the friends
- * @param block A Block with the list of followers and an error or nil
- * @return
- */
-- (void)fetchAllFollowersForAccount:(ACAccount *)twitterAccount block:(void (^)(NSArray *followers, NSError *error))block
+- (void)requestTwitterAllFollowersForAccount:(ACAccount *)twitterAccount block:(void (^)(NSArray *followers, NSError *error))block
 {
     __block NSNumber *nCursor = @-1;
     __block NSMutableArray *allFollowers = [NSMutableArray array];
@@ -480,8 +763,8 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
         }
         else
         {
-            NSLog(@"Error %d. Trying to call account/friends/ids.json", [urlResponse statusCode]);
-            NSError *error = [NSError errorWithDomain:@"UserStore error"
+            NSLog(@"Error %ld. Trying to call account/friends/ids.json", (long)[urlResponse statusCode]);
+            NSError *error = [NSError errorWithDomain:NSStringFromClass([self class])
                                                  code:[urlResponse statusCode]
                                              userInfo:[NSDictionary dictionaryWithObject:@"Called account/friends/ids.json"
                                                                                   forKey:NSLocalizedDescriptionKey]];
@@ -528,8 +811,7 @@ static NSString * const GMSocialMediatorFacebookAppId = @"223394077853020";
         }
         else
         {
-            
-            NSError *error = [NSError errorWithDomain:@"UserStore error"
+            NSError *error = [NSError errorWithDomain:NSStringFromClass([self class])
                                                  code:[urlResponse statusCode]
                                              userInfo:[NSDictionary dictionaryWithObject:@"Called https://api.twitter.com/1.1/followers/ids.json"
                                                                                   forKey:NSLocalizedDescriptionKey]];

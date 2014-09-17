@@ -1,0 +1,15 @@
+//
+// GMSocialMediator
+//
+
+// Errors
+"kErrorNoFacebookAccountFound" = "Cannot find a Facebook account.";
+"kErrorCouldNotParseResponse" = "Cannot fetch user info.";
+"kErrorCouldNotConnectWithFacebook" = "Cannot connect with Facebook";
+"kErrorAccessNotGranted" = "Need Read Access permissions to your Facebook account.";
+"kErrorTwitterAccountNotSelected" = "Need to choose one Twitter account.";
+"kErrorNoTwitterAccountsFound" = "Cannot find a Twitter account.";
+
+// Dialogs
+"kTextSelectTwitterAccount" = "Select a Twitter account";
+"kTextCancel" = "Cancel";

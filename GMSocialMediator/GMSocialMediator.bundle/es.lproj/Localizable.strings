@@ -1,0 +1,16 @@
+//
+// GMSocialMediator
+//
+
+// Errors
+"kErrorNoFacebookAccountFound" = "No se ha encontrado ninguna cuenta de Facebook configurada.";
+"kErrorCouldNotParseResponse" = "No ha sido posible obtener la información de su usuario.";
+"kErrorCouldNotConnectWithFacebook" = "No ha sido posible conectar con Facebook.";
+"kErrorAccessNotGranted" = "Debe conceder acceso a su cuenta de Facebook.";
+"kErrorTwitterAccountNotSelected" = "Debe elegir una cuenta de Twitter.";
+"kErrorNoTwitterAccountsFound" = "No se ha encontrado ninguna cuenta de Twitter configurada.";
+"kErrorInviteFriendsRequestCanceled" = "No ha sido posible enviar la solicitud.";
+
+// Dialogs
+"kTextSelectTwitterAccount" = "Selecciona una cuenta de Twitter";
+"kTextCancel" = "Cancelar";
